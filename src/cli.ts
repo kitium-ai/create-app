@@ -6,13 +6,14 @@
  */
 
 import { Command } from 'commander';
-import chalk from 'chalk';
+import { createLogger } from '@kitiumai/logger';
 import { createProject } from './generator.js';
 import { promptForOptions } from './prompts.js';
 import { getPackageInfo } from './utils.js';
 
 const program = new Command();
 const packageInfo = getPackageInfo();
+const logger = createLogger();
 
 program
   .name('create-kitium-app')
@@ -24,7 +25,7 @@ program
   .option('--no-git', 'Skip git initialization')
   .option('--no-install', 'Skip dependency installation')
   .action(async (projectName, options) => {
-    console.log(chalk.cyan.bold('\n✨ Welcome to KitiumAI Project Generator!\n'));
+    logger.info('\n✨ Welcome to KitiumAI Project Generator!\n');
 
     try {
       // Get project options from prompts or CLI args
@@ -33,17 +34,17 @@ program
       // Generate the project
       await createProject(projectOptions);
 
-      console.log(chalk.green.bold('\n✅ Project created successfully!\n'));
-      console.log(chalk.cyan('Next steps:'));
-      console.log(chalk.gray(`  cd ${projectOptions.projectName}`));
-      
+      logger.info('\n✅ Project created successfully!\n');
+      logger.info('Next steps:');
+      logger.info(`  cd ${projectOptions.projectName}`);
+
       if (!projectOptions.install) {
-        console.log(chalk.gray(`  ${projectOptions.packageManager} install`));
+        logger.info(`  ${projectOptions.packageManager} install`);
       }
-      
-      console.log(chalk.gray(`  ${projectOptions.packageManager} dev\n`));
+
+      logger.info(`  ${projectOptions.packageManager} dev\n`);
     } catch (error) {
-      console.error(chalk.red('\n❌ Error creating project:'), error);
+      logger.error('\n❌ Error creating project:', error);
       process.exit(1);
     }
   });

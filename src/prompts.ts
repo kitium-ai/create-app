@@ -1,5 +1,4 @@
 import enquirer from 'enquirer';
-import chalk from 'chalk';
 
 const { prompt } = enquirer;
 
@@ -37,6 +36,7 @@ export async function promptForOptions(
   projectName?: string,
   cliOptions: Partial<ProjectOptions> = {}
 ): Promise<ProjectOptions> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const questions: any[] = [];
 
   // Project name
@@ -112,9 +112,8 @@ export async function promptForOptions(
     install?: boolean;
   }
 
-  const answers = questions.length > 0 
-    ? await prompt<PromptAnswers>(questions) 
-    : {} as PromptAnswers;
+  const answers =
+    questions.length > 0 ? await prompt<PromptAnswers>(questions) : ({} as PromptAnswers);
 
   return {
     projectName: projectName || answers.projectName!,

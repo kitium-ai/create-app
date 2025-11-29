@@ -1,17 +1,40 @@
 {
   "name": "@kitiumai/create-app",
   "version": "1.0.0",
-  "description": "CLI tool for scaffolding KitiumAI projects",
+  "description": "Interactive CLI tool for scaffolding and bootstrapping KitiumAI projects with automated setup and configuration",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
   "bin": {
     "create-kitium-app": "./dist/cli.js",
     "create-app": "./dist/cli.js"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./generator": {
+      "types": "./dist/generator.d.ts",
+      "import": "./dist/generator.js"
+    },
+    "./prompts": {
+      "types": "./dist/prompts.d.ts",
+      "import": "./dist/prompts.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    }
+  },
   "files": [
     "dist",
     "templates",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
@@ -32,9 +55,20 @@
     "template",
     "scaffold",
     "generator",
+    "project-generator",
     "kitiumai",
     "typescript",
-    "react"
+    "react",
+    "boilerplate",
+    "create",
+    "setup",
+    "interactive",
+    "tooling",
+    "npm",
+    "initialization",
+    "configuration",
+    "starter-template",
+    "development-tools"
   ],
   "author": "KitiumAI",
   "repository": {
@@ -55,12 +89,19 @@
     "enquirer": "^2.4.1",
     "execa": "^8.0.1",
     "fs-extra": "^11.2.0",
-    "ora": "^8.0.1"
+    "ora": "^8.0.1",
+    "@kitiumai/logger": "^2.0.0",
+    "@kitiumai/types": "^2.0.0",
+    "@kitiumai/utils-ts": "^2.0.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.1",
     "typescript": "^5.6.0",
-    "vitest": "^2.0.0"
+    "vitest": "^2.0.0",
+    "@kitiumai/config": "^2.0.0",
+    "@kitiumai/scripts": "^1.0.0",
+    "@kitiumai/vitest-helpers": "^2.0.0",
+    "@kitiumai/test-core": "^2.0.0"
   }
 }

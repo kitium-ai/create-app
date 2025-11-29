@@ -4,8 +4,11 @@ import fs from 'fs-extra';
 import chalk from 'chalk';
 import ora from 'ora';
 import { execa } from 'execa';
+import { camelCase, pascalCase } from '@kitiumai/utils-ts';
+
 import type { ProjectOptions } from './prompts.js';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
@@ -72,7 +75,7 @@ export async function createProject(options: ProjectOptions): Promise<void> {
       await execa('git', ['add', '.'], { cwd: targetDir });
       await execa('git', ['commit', '-m', 'Initial commit'], { cwd: targetDir });
       spinner.succeed(chalk.green('Git repository initialized'));
-    } catch (error) {
+    } catch {
       spinner.warn(chalk.yellow('Git initialization failed (git may not be installed)'));
     }
   }
@@ -89,7 +92,7 @@ export async function createProject(options: ProjectOptions): Promise<void> {
       try {
         await execa('npx', ['kitiumai-config', '--auto'], { cwd: targetDir });
         spinner.succeed(chalk.green('Project configured'));
-      } catch (error) {
+      } catch {
         spinner.warn(chalk.yellow('kitiumai-config execution skipped (may not be available yet)'));
       }
     } catch (error) {
@@ -131,12 +134,12 @@ async function copyTemplate(
       await copyTemplate(srcPath, destPath, projectName);
     } else {
       let content = await fs.readFile(srcPath, 'utf-8');
-      
+
       // Replace template variables
       content = content
         .replace(/\{\{PROJECT_NAME\}\}/g, projectName)
-        .replace(/\{\{PROJECT_NAME_PASCAL\}\}/g, toPascalCase(projectName))
-        .replace(/\{\{PROJECT_NAME_CAMEL\}\}/g, toCamelCase(projectName));
+        .replace(/\{\{PROJECT_NAME_PASCAL\}\}/g, pascalCase(projectName))
+        .replace(/\{\{PROJECT_NAME_CAMEL\}\}/g, camelCase(projectName));
 
       await fs.writeFile(destPath, content);
     }
@@ -148,42 +151,4 @@ async function copyTemplate(
   if (await fs.pathExists(gitignoreSrc)) {
     await fs.copy(gitignoreSrc, gitignoreDest);
   }
-}
-
-/**
- * Convert string to PascalCase
- *
- * @param str - String to convert (e.g., 'my-project' or 'my_project')
- * @returns PascalCase string (e.g., 'MyProject')
- * @internal
- *
- * @example
- * ```ts
- * toPascalCase('my-awesome-project'); // 'MyAwesomeProject'
- * toPascalCase('my_project'); // 'MyProject'
- * ```
- */
-function toPascalCase(str: string): string {
-  return str
-    .split(/[-_]/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join('');
-}
-
-/**
- * Convert string to camelCase
- *
- * @param str - String to convert (e.g., 'my-project' or 'my_project')
- * @returns camelCase string (e.g., 'myProject')
- * @internal
- *
- * @example
- * ```ts
- * toCamelCase('my-awesome-project'); // 'myAwesomeProject'
- * toCamelCase('my_project'); // 'myProject'
- * ```
- */
-function toCamelCase(str: string): string {
-  const pascal = toPascalCase(str);
-  return pascal.charAt(0).toLowerCase() + pascal.slice(1);
 }
